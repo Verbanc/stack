@@ -55,14 +55,16 @@ resource "aws_internet_gateway" "main" {
 }
 
 resource "aws_nat_gateway" "main" {
-  count         = "${length(var.internal_subnets)}"
+  #count         = "${length(var.internal_subnets)}"
+  count         = 1
   allocation_id = "${element(aws_eip.nat.*.id, count.index)}"
   subnet_id     = "${element(aws_subnet.external.*.id, count.index)}"
   depends_on    = ["aws_internet_gateway.main"]
 }
 
 resource "aws_eip" "nat" {
-  count = "${length(var.internal_subnets)}"
+  #count = "${length(var.internal_subnets)}"
+  count = 1
   vpc   = true
 }
 
@@ -124,7 +126,7 @@ resource "aws_route" "internal" {
   count                  = "${length(compact(var.internal_subnets))}"
   route_table_id         = "${element(aws_route_table.internal.*.id, count.index)}"
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = "${element(aws_nat_gateway.main.*.id, count.index)}"
+  nat_gateway_id         = "${aws_nat_gateway.main.0.id}"
 }
 
 /**
