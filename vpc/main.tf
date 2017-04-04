@@ -80,7 +80,7 @@ resource "aws_subnet" "internal" {
 
   tags {
     #Name = "${var.name}-${format("internal-%03d", count.index+1)}"
-    Name = "${element(var.internal_subnets.tags.*, count.index)}"
+    Name = "${element(var.internal_subnets["tags"].*, count.index)}"
   }
 }
 
@@ -93,7 +93,7 @@ resource "aws_subnet" "external" {
 
   tags {
     #Name = "${var.name}-${format("external-%03d", count.index+1)}"
-    Name = "${element(var.external_subnets.tags.*, count.index)}"
+    Name = "${element(var.external_subnets["tags"].*, count.index)}"
   }
 }
 
