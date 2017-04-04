@@ -130,7 +130,7 @@ resource "aws_route" "internal" {
   count                  = "${length(compact(var.internal_subnets["subnets"]))}"
   route_table_id         = "${element(aws_route_table.internal.*.id, count.index)}"
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = "${aws_nat_gateway.main.0.id}"
+  nat_gateway_id         = "${aws_nat_gateway.main.id}"
 }
 
 /**
