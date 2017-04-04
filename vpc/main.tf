@@ -116,7 +116,7 @@ resource "aws_route" "external" {
 }
 
 resource "aws_route_table" "internal" {
-  count  = "${length(var.internal_subnets)}"
+  count  = "${length(var.internal_subnets["subnets"])}"
   vpc_id = "${aws_vpc.main.id}"
 
   tags {
@@ -125,7 +125,7 @@ resource "aws_route_table" "internal" {
 }
 
 resource "aws_route" "internal" {
-  count                  = "${length(compact(var.internal_subnets))}"
+  count                  = "${length(compact(var.internal_subnets["subnets"]))}"
   route_table_id         = "${element(aws_route_table.internal.*.id, count.index)}"
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = "${aws_nat_gateway.main.0.id}"
@@ -136,13 +136,13 @@ resource "aws_route" "internal" {
  */
 
 resource "aws_route_table_association" "internal" {
-  count          = "${length(var.internal_subnets)}"
+  count          = "${length(var.internal_subnets["subnets"])}"
   subnet_id      = "${element(aws_subnet.internal.*.id, count.index)}"
   route_table_id = "${element(aws_route_table.internal.*.id, count.index)}"
 }
 
 resource "aws_route_table_association" "external" {
-  count          = "${length(var.external_subnets)}"
+  count          = "${length(var.external_subnets["subnets"])}"
   subnet_id      = "${element(aws_subnet.external.*.id, count.index)}"
   route_table_id = "${aws_route_table.external.id}"
 }
