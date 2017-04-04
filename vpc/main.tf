@@ -4,12 +4,12 @@ variable "cidr" {
 
 variable "external_subnets" {
   description = "List of external subnets"
-  type        = "list"
+  type        = "map"
 }
 
 variable "internal_subnets" {
   description = "List of internal subnets"
-  type        = "list"
+  type        = "map"
 }
 
 variable "environment" {
@@ -74,12 +74,13 @@ resource "aws_eip" "nat" {
 
 resource "aws_subnet" "internal" {
   vpc_id            = "${aws_vpc.main.id}"
-  cidr_block        = "${element(var.internal_subnets, count.index)}"
+  cidr_block        = "${element(var.internal_subnets.subnets, count.index)}"
   availability_zone = "${element(var.availability_zones, count.index)}"
-  count             = "${length(var.internal_subnets)}"
+  count             = "${length(var.internal_subnets.subnets)}"
 
   tags {
-    Name = "${var.name}-${format("internal-%03d", count.index+1)}"
+    #Name = "${var.name}-${format("internal-%03d", count.index+1)}"
+    Name = "${element(var.internal_subnets.tags.*, count.index)}"
   }
 }
 
@@ -91,7 +92,8 @@ resource "aws_subnet" "external" {
   map_public_ip_on_launch = true
 
   tags {
-    Name = "${var.name}-${format("external-%03d", count.index+1)}"
+    #Name = "${var.name}-${format("external-%03d", count.index+1)}"
+    Name = "${element(var.external_subnets.tags.*, count.index)}"
   }
 }
 
