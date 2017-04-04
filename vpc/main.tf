@@ -56,7 +56,7 @@ resource "aws_internet_gateway" "main" {
 
 resource "aws_nat_gateway" "main" {
   #count         = "${length(var.internal_subnets)}"
-  count = 0
+  count = 1
 
   #allocation_id = "${element(aws_eip.nat.*.id, count.index)}"
   allocation_id = "${aws_eip.nat.id}"
