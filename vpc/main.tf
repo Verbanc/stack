@@ -74,26 +74,26 @@ resource "aws_eip" "nat" {
 
 resource "aws_subnet" "internal" {
   vpc_id            = "${aws_vpc.main.id}"
-  cidr_block        = "${element(var.internal_subnets.subnets, count.index)}"
+  cidr_block        = "${element(var.internal_subnets["subnets"], count.index)}"
   availability_zone = "${element(var.availability_zones, count.index)}"
-  count             = "${length(var.internal_subnets.subnets)}"
+  count             = "${length(var.internal_subnets.["subnets"])}"
 
   tags {
     #Name = "${var.name}-${format("internal-%03d", count.index+1)}"
-    Name = "${element(var.internal_subnets["tags"].*, count.index)}"
+    Name = "${element(var.internal_subnets["tags"], count.index)}"
   }
 }
 
 resource "aws_subnet" "external" {
   vpc_id                  = "${aws_vpc.main.id}"
-  cidr_block              = "${element(var.external_subnets, count.index)}"
+  cidr_block              = "${element(var.external_subnets["subnets"], count.index)}"
   availability_zone       = "${element(var.availability_zones, count.index)}"
-  count                   = "${length(var.external_subnets)}"
+  count                   = "${length(var.external_subnets["subnets"])}"
   map_public_ip_on_launch = true
 
   tags {
     #Name = "${var.name}-${format("external-%03d", count.index+1)}"
-    Name = "${element(var.external_subnets["tags"].*, count.index)}"
+    Name = "${element(var.external_subnets["tags"], count.index)}"
   }
 }
 
